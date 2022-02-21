@@ -131,26 +131,21 @@ void ivestis(Studentas& temp, int &i)
                         {
                             cout << "Neteisinga ivestis" << endl;
                             cout << "Ar dar yra pazymiu? T-taip, N-ne: "; cin >> stop;
-                        } while (stop != "T" && stop != "t");
+                        } while ((stop != "T" && stop != "t") && (stop != "N" && stop != "n"));
                     }
 
                 }
                 else
                 {
-                    do
-                    {
                         cout << "Neteisinga ivestis" << endl;
-                        cout << "Ar dar yra pazymiu? T-taip, N-ne: "; cin >> stop;
-                    } while ((stop != "T" && stop != "t") && (stop != "N" && stop != "n"));
                 }
 
             }
             else
             {
                 cin.clear();
-                cin.ignore();
+                cin.ignore(10000, '\n');
                 cout << "Neteisinga ivestis" << endl;
-                cout << "Ar dar yra pazymiu? T-taip, N-ne: "; cin >> stop;
             }
         } while (stop != "N" && stop != "n");
         int arrSize = *(&temp.nd + 1) - temp.nd;

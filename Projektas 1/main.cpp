@@ -104,7 +104,7 @@ void ivestis(Studentas& temp)
         if (choice != "1" && choice != "2") 
         {
             cin.clear();
-            cin.ignore();
+            cin.ignore(10000, '\n');
             cout << "Neteisinga ivestis" << endl; //Jei ivestis neteisinga, apie tai pranesama
         }
     } while (choice != "1" && choice != "2"); //ciklas veikia tol, kol bus gauta teisinga ivestis
@@ -139,23 +139,21 @@ void ivestis(Studentas& temp)
                 }
                 else //jei ivestas neteisingas skaicius, pranesama apie tai ir klausiama ar dar bus pazymiu, jei taip, prasys is naujo ivesti pazymi
                 {
-                    do
-                    {
-                        cout << "Neteisinga ivestis" << endl;
-                        cout << "Ar dar yra pazymiu? T-taip, N-ne: "; cin >> stop;
-                    } while ((stop != "T" && stop != "t") && (stop != "N" && stop != "n"));
+                    cin.clear();
+                    cin.ignore(10000, '\n');
+                    cout << "Neteisinga ivestis" << endl; 
                 }
 
             } //jei ivestas ne skaicius, pranesama apie tai ir klausiama ar dar bus pazymiu
             else
             {
                 cin.clear();
-                cin.ignore();
+                cin.ignore(10000, '\n');
                 cout << "Neteisinga ivestis" << endl;
-                cout << "Ar dar yra pazymiu? T-taip, N-ne: "; cin >> stop;
+                
             }
 
-        } while (stop != "N" && stop != "n"); //viskas vykdoma, kol vartotojas ivest norima namu darbu skaiciu
+        } while (stop != "N" && stop != "n"); //viskas vykdoma, kol vartotojas ives norima namu darbu skaiciu
     do 
     {
         cout << "Iveskite egzamino iverti:"; cin >> egzam;
@@ -168,14 +166,14 @@ void ivestis(Studentas& temp)
             else //Jei ivestas neteisingas egzamino balas, pranesama
             {
                 cin.clear();
-                cin.ignore();
+                cin.ignore(10000, '\n');
                 cout << "Neteisinga ivestis" << endl;
             }
             }
         else //jei ivestas string, pvz - zodis
         {
             cin.clear();
-            cin.ignore();
+            cin.ignore(10000, '\n');
             cout << "Neteisinga ivestis" << endl;
         }
     } while (!egzam || (egzam <= 0 || egzam > 10)); //tol, kol neivestas skaicius arba kol skaicius nepatenka i intervala nuo 1 iki 10
