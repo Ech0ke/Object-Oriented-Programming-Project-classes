@@ -4,6 +4,9 @@
 #include <vector>
 #include <random>
 #include <algorithm>
+#include <chrono>
+#include <fstream>
+#include <sstream>
 using std::cout;
 using std::cin;
 using std::string;
@@ -12,6 +15,10 @@ using std::vector;
 using std::setw;
 using std::left;
 using std::right;
+using std::mt19937;
+using hrClock = std::chrono::high_resolution_clock;
+typedef std::uniform_int_distribution<int>  int_distribution;
+
 struct Studentas
 {
     string vardas = "";
@@ -22,14 +29,48 @@ struct Studentas
     double rez = 0; //vidurkio rezultatas
     double med = 0; //mediana
 };
-
+struct Sutrumpinta
+{
+    string vardas = "";
+    string pavarde = "";
+    double rez = 0;
+    double med = 0;
+};
+void Manual();
+void File();
 void ivestis(Studentas& temp);
 void isvestis(Studentas& temp);
+void isvestis_file(Sutrumpinta& temp);
 void isvestis_med(Studentas& temp);
 void isvestis_vid(Studentas& temp);
 void vidurkis(Studentas& temp);
 void mediana(Studentas& temp);
 int main()
+{
+    int choice;
+    cout << "Irasykite 1, jei duomenis nuskaityti is failo.\nIrasykite 2, jei norite duomenis rasyti ranka.\n";
+    do
+    {
+        cin >> choice; 
+        switch (choice)
+        {
+        case 1:
+            File();
+            break;
+        case 2: 
+            Manual();
+            break;
+        default:
+
+            cout << "Neteisinga ivestis. Iveskite 1 arba 2. " << endl;
+            cin.clear(); //isvaloma neteisinga ivestis
+            cin.ignore(10000, '\n'); //ignoruojama ivestis ir taip apsaugoma nuo string ivesties
+            break;
+        }
+    } while (choice != 1 && choice != 2);
+    
+}
+void Manual()
 {
     int s, choice; //s-studentu kiekis, choice - rezultatu isvesties pasirinkimo budas
     cout << "Kiek yra studentu: "; cin >> s;
@@ -88,10 +129,65 @@ int main()
             }
         } while (choice != 1 && choice != 2 && choice != 3); //kartojama, kol bus pasirinktas teisingas variantas
         system("pause");
-        return 0;
     }
 }
+void File()
+{
+    vector <Sutrumpinta> sar;
+    Studentas st;
+    Sutrumpinta sutr;
+    string line;
+    int nd, egz, lines;
+    std::ifstream fd("kursiokai.txt");
+    std::getline(fd, line); //read the first line of your file to string 
+    std::stringstream x;
+    x << line;                   //send the line to the stringstream object...
 
+    int how_many_columns = 0;
+    string value;
+
+    while (x >> value) how_many_columns++;  //while there's something in the line, increase the number of columns
+
+    cout << how_many_columns<<endl;
+    // count the newlines with an algorithm specialized for counting:
+    for (lines = 0; std::getline(fd, line); lines++)
+    {
+    }
+    cout << lines<<endl;
+    sar.reserve(lines);
+    fd.clear();
+    fd.seekg(0);
+    std::getline(fd, line);
+    cout << left << setw(20) << "Vardas" << left << setw(20) << "Pavarde" << "Galutinis vid. " << "/ Galutinis med." << endl;
+    for (int i = 0; i < lines; i++)
+    {
+        fd >> st.vardas; fd >> st.pavarde;
+        for (int i = 0; i < how_many_columns - 3; i++)
+        {
+           fd >> nd;
+           st.nd.push_back(nd);
+           st.sum += nd;
+        }
+        fd >> egz;
+        st.egz = egz;
+        vidurkis(st); 
+        mediana(st);
+        sutr.vardas = st.vardas;
+        sutr.pavarde = st.pavarde;
+        sutr.rez = st.rez;
+        sutr.med = st.med;
+        //st.nd.clear();
+        sar.push_back(sutr);
+        isvestis_file(sutr);
+    }
+    /*for (int i = 0; i < s; i++)
+    {
+        FailoNuskaitymas2(st); //perduodami studento duomenys i ivesties funkcija
+        sar.push_back(st);
+    }*/
+
+    fd.close();
+}
 void ivestis(Studentas& temp)
 {
     int nd, egzam;
@@ -186,29 +282,61 @@ void ivestis(Studentas& temp)
     }
     else //jei vartotojas pasirenka generuoti skaicius (choice==2)
     {
+        mt19937 mt(static_cast<long unsigned int>(hrClock::now().time_since_epoch().count()));
+        int_distribution dist(0, 10);
+        int skaitl;
+        cout << "Kiek pazymiu sugeneruoti? " << endl;
         do
         {
-            srand((unsigned int)time(NULL)); //pasirenkamas pradzios generavimo laikas
-            nd = (rand() % 10) + 1; //sugeneruojamas balas
-            cout << "Sugeneruotas " << i + 1 << "-as pazymys: " << nd << endl; //parodomas sugeneruotas balas
-            temp.nd.push_back(nd); //balas pridedamas i studento vector konteineri
-            temp.sum += nd; //sumuojami pazymiai
-            i++;
-            cout << "Ar dar yra pazymiu? T-taip, N-ne: "; cin >> stop;
-            if ((stop != "T" && stop != "t") && (stop != "N" && stop != "n")) //Jei gaunama neteisinga ivestis, pranesama apie tai ir bandoma gauti teisinga atsakyma
-                do
+            cin >> skaitl;
+            if (skaitl > 0)
+            {
+                for (int i = 0; i < skaitl; i++)
                 {
-                    cout << "Neteisinga ivestis" << endl;
-                    cout << "Ar dar yra pazymiu? T-taip, N-ne: "; cin >> stop;
-                } while ((stop != "T" && stop != "t") && (stop != "N" && stop != "n"));
-        } while (stop != "N" && stop != "n"); //numeriai generuojami tol, kol bus norima
+                    nd = dist(mt);
+                    temp.nd.push_back(nd); //balas pridedamas i studento vector konteineri
+                    temp.sum += nd;
+                }
+                cout << "Sugeneruoti pazymiai: ";
+                for (int i = 0; i < temp.nd.size(); i++)
+                {
+                    cout << temp.nd[i]<<" ";
+                }
+                cout << endl;
+              
+            }
+            else if (!skaitl && skaitl!=0)
+            {
+                cout << "Neteisinga ivestis. Iveskite teigiama skaiciu " << endl;
+                cin.clear(); //isvaloma neteisinga ivestis
+                cin.ignore(10000, '\n'); //ignoruojama ivestis ir taip apsaugoma nuo string ivesties
+            }
+            else if (skaitl == 0)
+            {
+                cout<<"Tariama, jog studentas namu darbu nedare." << endl;
+                break;
+            }
+            else
+            {
+                cout << "Neteisinga ivestis. Iveskite teigiama skaiciu. " << endl;
+                cin.clear(); //isvaloma neteisinga ivestis
+                cin.ignore(10000, '\n'); //ignoruojama ivestis ir taip apsaugoma nuo string ivesties
+                
+            }
+        } while (skaitl<0 || !skaitl); //numeriai generuojami tol, kol bus norima
 
-        egzam = (rand() % 10) + 1; //sugeneruojamas egzamino balas nuo 1 iki 10
+        egzam = dist(mt); //sugeneruojamas egzamino balas nuo 1 iki 10
         cout << "Sugeneruotas atsitiktinis egzamino balas: " << egzam << endl; //Balas parodomas vartotojui
         temp.egz = egzam; //Balas priskiramas studentui
     }
 }
 void isvestis(Studentas& temp)
+{
+
+    cout << setw(20) << temp.vardas << setw(20) << temp.pavarde << setw(17) << std::fixed << std::setprecision(2) << temp.rez
+        << temp.med << endl;
+}
+void isvestis_file(Sutrumpinta& temp)
 {
 
     cout << setw(20) << temp.vardas << setw(20) << temp.pavarde << setw(17) << std::fixed << std::setprecision(2) << temp.rez
@@ -225,21 +353,33 @@ void isvestis_vid(Studentas& temp)
 void vidurkis(Studentas& temp)
 {
     size_t nd_sk = temp.nd.size(); //kiek yra namu darbu pazymiu
-    double nd_vid = (double)temp.sum / nd_sk; //skaicuojamas vidurkis
+    double nd_vid;
+    if (nd_sk != 0)
+    {
+        nd_vid = (double)temp.sum / nd_sk; //skaicuojamas vidurkis
+    }
+    else nd_vid = 0;
     temp.rez = 0.4 * nd_vid + 0.6 * temp.egz; //skaiciuojamas galutinis balas
 
 }
 void mediana(Studentas& temp)
 {
     double med;
-    sort(temp.nd.begin(), temp.nd.end()); //isrusiuojamas vector konteineris didejimo tvarka
-    if (temp.nd.size() % 2 == 0) //jei yra lyginis skaicius elementy
+    if (temp.nd.size() >= 1)
     {
-        med = (temp.nd[temp.nd.size() / 2 - 1] + temp.nd[temp.nd.size() / 2]) / 2; //sudedami 2 viduriniai elementai ir dalinama is 2
+        sort(temp.nd.begin(), temp.nd.end()); //isrusiuojamas vector konteineris didejimo tvarka
+        if (temp.nd.size() % 2 == 0) //jei yra lyginis skaicius elementy
+        {
+            med = (temp.nd[temp.nd.size() / 2 - 1] + temp.nd[temp.nd.size() / 2]) / 2; //sudedami 2 viduriniai elementai ir dalinama is 2
+        }
+        else //jei nelyginis skaicius elementu, paimamas vidurinis elementas
+        {
+            med = temp.nd[temp.nd.size() / 2];
+        }
     }
-    else //jei nelyginis skaicius elementu, paimamas vidurinis elementas
+    else
     {
-        med = temp.nd[temp.nd.size() / 2];
+        med = 0;
     }
     temp.med = 0.4 * med + 0.6 * temp.egz; //skaiciuojamas galutinis balas
 }
