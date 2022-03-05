@@ -7,6 +7,8 @@
 #include <chrono>
 #include <fstream>
 #include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
 using std::cout;
 using std::cin;
 using std::string;
@@ -16,6 +18,7 @@ using std::setw;
 using std::left;
 using std::right;
 using std::mt19937;
+using std::stringstream;
 using hrClock = std::chrono::high_resolution_clock;
 typedef std::uniform_int_distribution<int>  int_distribution;
 
@@ -29,35 +32,29 @@ struct Studentas
     double rez = 0; //vidurkio rezultatas
     double med = 0; //mediana
 };
-struct Sutrumpinta
-{
-    string vardas = "";
-    string pavarde = "";
-    double rez = 0;
-    double med = 0;
-};
 void Manual();
 void File();
 void ivestis(Studentas& temp);
 void isvestis(Studentas& temp);
-void isvestis_file(Sutrumpinta& temp);
+void isvestis_file(vector <Studentas>& temp);
 void isvestis_med(Studentas& temp);
 void isvestis_vid(Studentas& temp);
 void vidurkis(Studentas& temp);
 void mediana(Studentas& temp);
+bool vardas_sort(const Studentas& a, const Studentas& b);
 int main()
 {
     int choice;
     cout << "Irasykite 1, jei duomenis nuskaityti is failo.\nIrasykite 2, jei norite duomenis rasyti ranka.\n";
     do
     {
-        cin >> choice; 
+        cin >> choice;
         switch (choice)
         {
         case 1:
             File();
             break;
-        case 2: 
+        case 2:
             Manual();
             break;
         default:
@@ -68,7 +65,7 @@ int main()
             break;
         }
     } while (choice != 1 && choice != 2);
-    
+
 }
 void Manual()
 {
@@ -133,60 +130,55 @@ void Manual()
 }
 void File()
 {
-    vector <Sutrumpinta> sar;
+    vector <Studentas> sar;
     Studentas st;
-    Sutrumpinta sutr;
     string line;
     int nd, egz, lines;
     std::ifstream fd("kursiokai.txt");
-    std::getline(fd, line); //read the first line of your file to string 
-    std::stringstream x;
-    x << line;                   //send the line to the stringstream object...
-
+    std::getline(fd, line); //perskaitoma pirma failo eilute
+    stringstream x;
+    x << line;
     int how_many_columns = 0;
     string value;
 
-    while (x >> value) how_many_columns++;  //while there's something in the line, increase the number of columns
-
-    cout << how_many_columns<<endl;
-    // count the newlines with an algorithm specialized for counting:
+    while (x >> value) how_many_columns++;  //Kol kazkas randama eiluteje tarp tarpu, skaiciuojama
+    // suskaiciuoti eiluciu skaiciu
     for (lines = 0; std::getline(fd, line); lines++)
     {
     }
-    cout << lines<<endl;
     sar.reserve(lines);
     fd.clear();
     fd.seekg(0);
+    stringstream my_buffer;
     std::getline(fd, line);
-    cout << left << setw(20) << "Vardas" << left << setw(20) << "Pavarde" << "Galutinis vid. " << "/ Galutinis med." << endl;
+    my_buffer << fd.rdbuf();
+    fd.close();
     for (int i = 0; i < lines; i++)
     {
-        fd >> st.vardas; fd >> st.pavarde;
+        my_buffer >> st.vardas;
+        my_buffer >> st.pavarde;
         for (int i = 0; i < how_many_columns - 3; i++)
         {
-           fd >> nd;
-           st.nd.push_back(nd);
-           st.sum += nd;
-        }
-        fd >> egz;
-        st.egz = egz;
-        vidurkis(st); 
-        mediana(st);
-        sutr.vardas = st.vardas;
-        sutr.pavarde = st.pavarde;
-        sutr.rez = st.rez;
-        sutr.med = st.med;
-        //st.nd.clear();
-        sar.push_back(sutr);
-        isvestis_file(sutr);
-    }
-    /*for (int i = 0; i < s; i++)
-    {
-        FailoNuskaitymas2(st); //perduodami studento duomenys i ivesties funkcija
-        sar.push_back(st);
-    }*/
 
-    fd.close();
+            my_buffer >> nd;
+            st.nd.push_back(nd);
+            st.sum += nd;
+
+        }
+        my_buffer >> egz;
+        st.egz = egz;
+        vidurkis(st);
+        mediana(st);
+        st.sum = 0;
+        st.nd.clear();
+        sar.push_back(st);
+
+    }
+    sort(sar.begin(), sar.end(), vardas_sort);
+    isvestis_file(sar);
+    sar.clear();
+
+
 }
 void ivestis(Studentas& temp)
 {
@@ -212,9 +204,9 @@ void ivestis(Studentas& temp)
         do
         {
             cout << "Iveskite " << i + 1 << "-a(-i) pazymi: "; cin >> nd;
-            if (nd) //tikrinama, ar ivestas skaicius
+            if (nd || nd == 0) //tikrinama, ar ivestas skaicius
             {
-                if (nd > 0 && nd <= 10) //tikrinama, ar pazymys yra nuo 1 iki 10
+                if (nd >= 0 && nd <= 10) //tikrinama, ar pazymys yra nuo 0 iki 10
                 {
 
                     temp.nd.push_back(nd); //pazymys pridedamas i vector konteineri
@@ -258,7 +250,7 @@ void ivestis(Studentas& temp)
             cout << "Iveskite egzamino iverti:"; cin >> egzam;
             if (egzam) //tikrinama, ar ivestas skaicius
             {
-                if (egzam > 0 && egzam <= 10) //Jei ivestas egzamino balas yra tarp 1 ir 10, tesiama
+                if (egzam >= 0 && egzam <= 10) //Jei ivestas egzamino balas yra tarp 0 ir 10, tesiama
                 {
                     continue;
                 }
@@ -275,7 +267,7 @@ void ivestis(Studentas& temp)
                 cin.ignore(10000, '\n');
                 cout << "Neteisinga ivestis" << endl;
             }
-        } while (!egzam || (egzam <= 0 || egzam > 10)); //tol, kol neivestas skaicius arba kol skaicius nepatenka i intervala nuo 1 iki 10
+        } while (!egzam || (egzam < 0 || egzam > 10)); //tol, kol neivestas skaicius arba kol skaicius nepatenka i intervala nuo 1 iki 10
         temp.egz = egzam; //ivestas egzamino balas issaugomas strukturoje
 
 
@@ -300,12 +292,12 @@ void ivestis(Studentas& temp)
                 cout << "Sugeneruoti pazymiai: ";
                 for (int i = 0; i < temp.nd.size(); i++)
                 {
-                    cout << temp.nd[i]<<" ";
+                    cout << temp.nd[i] << " ";
                 }
                 cout << endl;
-              
+
             }
-            else if (!skaitl && skaitl!=0)
+            else if (!skaitl && skaitl != 0)
             {
                 cout << "Neteisinga ivestis. Iveskite teigiama skaiciu " << endl;
                 cin.clear(); //isvaloma neteisinga ivestis
@@ -313,7 +305,7 @@ void ivestis(Studentas& temp)
             }
             else if (skaitl == 0)
             {
-                cout<<"Tariama, jog studentas namu darbu nedare." << endl;
+                cout << "Tariama, jog studentas namu darbu nedare." << endl;
                 break;
             }
             else
@@ -321,9 +313,9 @@ void ivestis(Studentas& temp)
                 cout << "Neteisinga ivestis. Iveskite teigiama skaiciu. " << endl;
                 cin.clear(); //isvaloma neteisinga ivestis
                 cin.ignore(10000, '\n'); //ignoruojama ivestis ir taip apsaugoma nuo string ivesties
-                
+
             }
-        } while (skaitl<0 || !skaitl); //numeriai generuojami tol, kol bus norima
+        } while (skaitl < 0 || !skaitl); //numeriai generuojami tol, kol bus norima
 
         egzam = dist(mt); //sugeneruojamas egzamino balas nuo 1 iki 10
         cout << "Sugeneruotas atsitiktinis egzamino balas: " << egzam << endl; //Balas parodomas vartotojui
@@ -336,15 +328,27 @@ void isvestis(Studentas& temp)
     cout << setw(20) << temp.vardas << setw(20) << temp.pavarde << setw(17) << std::fixed << std::setprecision(2) << temp.rez
         << temp.med << endl;
 }
-void isvestis_file(Sutrumpinta& temp)
+void isvestis_file(vector <Studentas>& temp)
 {
 
-    cout << setw(20) << temp.vardas << setw(20) << temp.pavarde << setw(17) << std::fixed << std::setprecision(2) << temp.rez
-        << temp.med << endl;
+    std::ofstream out_f("Rezultatai.txt");
+    string output = "";
+    char eilute[1000];
+
+    out_f << left << setw(21) << "Vardas" << left << setw(21) << "Pavarde" << "Galutinis vid. " << "/ Galutinis med.\n";
+    out_f << "-------------------------------------------------------------------------\n";
+    for (int i = 0; i < temp.size(); i++)
+    {
+        sprintf_s(eilute, "%-20s %-20s %-16.2lf %-17.2lf\n", temp.at(i).vardas.c_str(), temp.at(i).pavarde.c_str(), temp.at(i).rez, temp.at(i).med);
+        output += eilute;
+    }
+    out_f << output;
+    out_f.close();
+    cout << "Rezultatai isvesti faile Rezultatai.txt\n";
 }
 void isvestis_med(Studentas& temp)
 {
-        cout << setw(20) << temp.vardas << setw(20) << temp.pavarde << setw(17) << std::fixed << std::setprecision(2) << temp.med << endl;
+    cout << setw(20) << temp.vardas << setw(20) << temp.pavarde << setw(17) << std::fixed << std::setprecision(2) << temp.med << endl;
 }
 void isvestis_vid(Studentas& temp)
 {
@@ -360,7 +364,6 @@ void vidurkis(Studentas& temp)
     }
     else nd_vid = 0;
     temp.rez = 0.4 * nd_vid + 0.6 * temp.egz; //skaiciuojamas galutinis balas
-
 }
 void mediana(Studentas& temp)
 {
@@ -382,4 +385,10 @@ void mediana(Studentas& temp)
         med = 0;
     }
     temp.med = 0.4 * med + 0.6 * temp.egz; //skaiciuojamas galutinis balas
+}
+bool vardas_sort(const Studentas& a, const Studentas& b)
+{
+    if (a.vardas == b.vardas)
+        return a.pavarde < b.pavarde;
+    return a.vardas < b.vardas;
 }
