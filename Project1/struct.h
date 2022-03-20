@@ -10,3 +10,9 @@ struct Studentas
     double rez = 0; //vidurkio rezultatas
     double med = 0; //mediana
 };
+
+struct zmogus {
+    string vardas = "";
+    string pavarde = "";
+    vector <int> paz;
+};
