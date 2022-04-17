@@ -1,7 +1,13 @@
-# V0.4
-Programa patobulinta ir leidžia sugeneruoti naują studentų failą arba atlikti spartos analizę su 1000, 10000, 100000, 1000000, 10000000 įrašų.  
+# V1.0
+Programa dirba su 3 skirtingais konteineriais vector, list ir deque ir studentų duomenis saugo į bendrą ir blogų konteinerius.
+Programos paleidžiamąjį failą main.exe galima sukurti atsidarius konsolę visų failų aplanke ir parašius komandą make vector, make list, make deque, priklausomai nuo konteinerio tipo.
 
-![Screenshot 2022-03-20 092714](https://user-images.githubusercontent.com/99315244/159152772-7b550ec3-74ef-4d20-ac8e-f13044180326.png)  
+
+Programos sparta
+![1container1](https://user-images.githubusercontent.com/99315244/163714673-d412b7f0-5f6c-4404-9696-69b098ef6d92.png)
+![1container2](https://user-images.githubusercontent.com/99315244/163714683-b411766b-2828-412f-bae0-7d2445d21565.png)
+Programos atminties suvartojimas palyginus, jei naudoja 2 konteinerius - gerų ir blogų.
+![1container3](https://user-images.githubusercontent.com/99315244/163714699-a73b73b0-4703-43ea-95bb-0e1c7d6b0240.png)
 
 *Header failai:*  
   **file.h** - duomenų nuskaitymo iš failo funkcijos prototipas.  
