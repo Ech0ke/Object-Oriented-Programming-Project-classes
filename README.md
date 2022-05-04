@@ -1,4 +1,4 @@
-# V1.1
+# V1.1.1
 Programa dirba su vector konteineriu ir turi studento klasę su privačiais kintamaisiais ir viešu interfeisu (komandomis).
 Programos paleidžiamąjį failą main.exe galima sukurti atsidarius konsolę visų failų aplanke ir parašyti komandą make vector.
 
