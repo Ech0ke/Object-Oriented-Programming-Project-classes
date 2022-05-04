@@ -5,6 +5,9 @@ Programos paleidžiamąjį failą main.exe galima sukurti atsidarius konsolę vi
 
 Programos sparta
 
+![class](https://user-images.githubusercontent.com/99315244/166628854-2b31c3f3-274b-446f-91ea-c8fe4d20026c.png)
+
+
 *Header failai:*  
   **file.h**  duomenų nuskaitymo iš failo funkcijos antraštė. 
   **libraries_and_std.h** - bibliotekos ir std naudojamų komandų aprašas.  
