@@ -1,4 +1,4 @@
-# V1.0.1
+# V1.2
 Programa dirba su 3 skirtingais konteineriais vector, list ir deque ir studentų duomenis saugo į bendrą ir blogų konteinerius.
 Programos paleidžiamąjį failą main.exe galima sukurti atsidarius konsolę visų failų aplanke ir parašius komandą make vector, make list, make deque, priklausomai nuo konteinerio tipo.
 
