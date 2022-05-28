@@ -1,25 +1,17 @@
-# V1.2
-Programoje įgyvendinta rule-of-three: yra destruktorius, kopojavimo konstruktorius, priskyrimo operatorius.
-Programa dirba su vector konteineriu ir turi studento klasę su privačiais kintamaisiais ir viešu interfeisu (komandomis).
-Programos paleidžiamąjį failą "main.exe" galima sukurti atsidarius konsolę visų failų aplanke ir parašyti komandą make vector.
+# Vektorius
+Padaryta std::vector konteinerio kopija. Veikia visos pagrindinės funkcijos kaip ir std::vector.
 
+**std::vector ir Vector greičio playginimas:**   
+![image](https://user-images.githubusercontent.com/99315244/170817615-030c9b17-6e40-47f2-b792-27d69911e555.png)
 
-Programos sparta
+Pirminė išvada: mano sukurtas vektorius greičiau sudeda elementus į konteinerį, nei std::vector.   
 
-![class](https://user-images.githubusercontent.com/99315244/166628854-2b31c3f3-274b-446f-91ea-c8fe4d20026c.png)
+**Tyrimas su klase Studentas:**   
+ 
+ ![image](https://user-images.githubusercontent.com/99315244/170817977-1a95c733-2c63-4544-b1d3-c57a889fdf7d.png)
 
+Galutinė išvada: naudojant savo vektorių klasėje, jis veikia lėčiau už srd::vector, tačiau skirtumas nėra didelis.
 
-*Header failai:*  
-  **file.h**  duomenų nuskaitymo iš failo funkcijos antraštė. 
-  **libraries_and_std.h** - bibliotekos ir std naudojamų komandų aprašas.  
-  **manual.h** - ranka įvedamų duomenų funkcijos prototipas.  
-  **studentas.h** - studento klasė ir kitos funkcijų antraštės.  
-*Source failai:*  
-**main.cpp** - pagrindinė funkcija iš kurios kreipiamasi į visas kitas funkcijas pagal naudotojo poreikį. Galima pasirinkti duomenis nuskaityti iš failo arba vesti ranka.  
-**create_file.cpp** - studentų failo pagal vartotojo nustatymus generavimo funkcija.  
-**file.cpp** - duomenų nuskaitymo iš failo funkcija. Patikrina, ar egzistuoja failas, iš kurio nuskaitomi duomenys, patikrina, ar failas netuščias ir apie tai infomuoja naudotoją. Jei viskas gerai, nuskaito duomenis.  
-**manual.cpp** - leidžia vartotojui ranka vesti studento duomenis arba generuoti pažymius atsitiktinai.  
-**functions.cpp** - įvairių, programoje būtinų funkcijų realizacijos (įvesties, išvesties ir t.t.).  
 
 
 
