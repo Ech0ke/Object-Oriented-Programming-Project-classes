@@ -112,5 +112,6 @@ void print(std::map<string, vector<int>>& word, vector<string>& url)
     }
 
     fr.close();
-    std::cout << "Rezultatai isvesti faile \"rezultatai.txt\"";
+    std::cout << "Rezultatai isvesti faile \"rezultatai.txt\"\n";
+    std::system("pause");
 }
